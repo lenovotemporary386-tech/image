@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="AI Image Studio - Generate premium digital art and photorealistic images with advanced AI.">
+    <title>AI Image Studio | Liquid Art Engine</title>
+
+    <!-- Design Kit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Modern Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand" id="brand">
+                <div class="brand-logo">
+                    <i data-lucide="sparkles"></i>
+                </div>
+                <span class="brand-name">Studio.AI</span>
+            </div>
+            <div class="nav-links">
+                <a href="#generate" class="nav-link active">Create</a>
+                <a href="#gallery" class="nav-link">Showcase</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-cta"
+                    style="background: var(--primary-surface); color: var(--text-main); border: 1px solid var(--glass-border); padding: 0.6rem 1.2rem; border-radius: 12px; font-weight: 600; cursor: pointer;">Get
+                    Pro</button>
+            </div>
+        </nav>
+
+        <!-- Dynamic Hero Section -->
+        <header class="hero-section">
+            <h1 class="hero-title">
+                The Future of <span class="highlight">Visual Imagination</span>
+            </h1>
+            <p class="hero-subtitle">
+                Harness the world's most powerful open AI engine to create professional-grade digital assets in seconds.
+            </p>
+
+            <!-- Generation Interface -->
+            <div class="generation-card" id="generate">
+                <form id="imageForm" class="creative-form">
+                    <div class="input-group">
+                        <textarea id="prompt" name="prompt"
+                            placeholder="Describe your vision... (e.g., 'An ethereal crystal forest with floating waterfalls, vaporwave aesthetic, volumetric lighting')"
+                            rows="4" maxlength="500" required aria-label="Image Prompt"></textarea>
+                        <span class="char-counter"><span id="charCount">0</span>/500</span>
+                    </div>
+
+                    <div class="controls-row">
+                        <button type="button" class="options-toggle" id="optionsToggle" aria-haspopup="true">
+                            <i data-lucide="settings-2"></i>
+                            <span>Parameters</span>
+                        </button>
+
+                        <div class="advanced-options" id="advancedOptions" role="menu">
+                            <div class="option-item">
+                                <label for="style">Artistic Style</label>
+                                <select id="style" name="style">
+                                    <option value="">Auto (Optimized)</option>
+                                    <option value="photorealistic">Photorealistic</option>
+                                    <option value="cinematic">Cinematic 8K</option>
+                                    <option value="anime">Anime / Manga</option>
+                                    <option value="digital-art">Digital Painting</option>
+                                    <option value="3d-render">Unreal Engine 5</option>
+                                    <option value="oil-painting">Classic Oil</option>
+                                    <option value="cyberpunk">Cyberpunk Neon</option>
+                                    <option value="architectural">Architectural</option>
+                                </select>
+                            </div>
+                            <div class="option-item">
+                                <label for="aspectRatio">Canvas Ratio</label>
+                                <select id="aspectRatio" name="aspectRatio">
+                                    <option value="1:1">Square (1:1)</option>
+                                    <option value="16:9" selected>Wide (16:9)</option>
+                                    <option value="9:16">Mobile (9:16)</option>
+                                    <option value="4:3">Standard (4:3)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="generateBtn">
+                            <span>Ignite AI</span>
+                            <i data-lucide="zap"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Premium Loader -->
+                <div class="loading-overlay" id="loadingState">
+                    <div class="loader-content">
+                        <div class="spinner-box"></div>
+                        <h3 class="loading-text">Generating Artwork...</h3>
+                        <p class="loading-subtext">AI is processing your imagination</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Gallery Showcase -->
+        <section class="gallery-section" id="gallery">
+            <div class="gallery-header-row">
+                <h2>Your Creative Vault</h2>
+                <span class="gallery-badge" id="imageCount">0 creatives</span>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-visual">
+                    <i data-lucide="cloud-lightning" style="width: 64px; height: 64px;"></i>
+                </div>
+                <h3>Your vault is empty</h3>
+                <p>Start generating to see your AI masterpieces appear here.</p>
+            </div>
+
+            <!-- The Grid -->
+            <div class="image-grid" id="imageGrid"></div>
+        </section>
+
+        <!-- Interactive Lightbox -->
+        <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
+            <button class="lightbox-close" id="lightboxClose" aria-label="Close Lightbox">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="lightbox-container">
+                <div class="lightbox-media">
+                    <img id="lightboxImage" src="" alt="AI Generated Artwork">
+                </div>
+                <div class="lightbox-controls">
+                    <div class="prompt-display">
+                        <p id="lightboxPrompt" class="lightbox-text"></p>
+                    </div>
+                    <button class="btn-primary" id="downloadBtn">
+                        <i data-lucide="download"></i>
+                        <span>Export 4K</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Script -->
+    <script>
+        // Init Icons
+        window.addEventListener('load', () => {
+            if (window.lucide) lucide.createIcons();
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
